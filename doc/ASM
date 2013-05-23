@@ -1,0 +1,14 @@
+# ASM
+This document describes the assembly language for pyArch.
+
+* Base ASM (only instructions supported by the "hardware")
+    * mnemonic(flags) op1, op2
+    * every part except mnemonic is optional (at least for some instructions)
+    * either make flags a bitvector or use menmonics
+    * one line, one instruction
+    * add(0x12) r1, r2
+    * Alles ab ";" gilt als Kommentar
+
+* Extended ASM (more convienient style)
+    * basically the same as base asm but with following extensions
+    * labels are signaled by ":" at the end of the line and referenced by @
