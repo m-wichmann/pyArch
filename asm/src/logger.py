@@ -8,7 +8,7 @@ class PyArchLogger(object):
         self.__mylogger = logging.getLogger(__name__)
         self.__mylogger.setLevel(logging.DEBUG)
 
-        fh = logging.FileHandler('pyArch_asm.log')
+        fh = logging.FileHandler('log_asm.log')
         fh.setLevel(logging.DEBUG)
 
         sh = logging.StreamHandler()

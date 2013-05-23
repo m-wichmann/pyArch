@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Set up the logger fpr pyArch"""
-
 import logging
 
 class PyArchLogger(object):
@@ -10,7 +8,7 @@ class PyArchLogger(object):
         self.__mylogger = logging.getLogger(__name__)
         self.__mylogger.setLevel(logging.DEBUG)
 
-        fh = logging.FileHandler('log_sim.log')
+        fh = logging.FileHandler('log_dbg.log')
         fh.setLevel(logging.DEBUG)
 
         sh = logging.StreamHandler()
