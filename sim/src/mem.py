@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pyArch
+import src
 
 
 
@@ -18,16 +18,21 @@ class MEM(object):
 
 
     def __init__(self):
-        pyArch.LOGGER.log("init MEM completed","INFO")
+        src.LOGGER.log("init MEM completed","INFO")
+        # set up list of mem segments
         self.__mem_segments = [None] * 65536
 
     def get_ram_base(self):
+        # get base address of ram, since ram object is not visible outside
+        # TODO: not needed
         for s in self.__mem_segments:
-            if isinstance(s, pyArch.ram.RAM):
+            if isinstance(s, src.ram.RAM):
                 return (self.__mem_segments.index(s) * 65536)
         return None
 
     def add_segment(self, segment):
+        """Register a segment with the mem"""
+        # search for first free slot
         for i in range(len(self.__mem_segments)):
             e = self.__mem_segments[i]
             if e == None:
@@ -35,6 +40,7 @@ class MEM(object):
                 break
 
     def print_segments(self):
+        """Print all registered segments"""
         for i in range(len(self.__mem_segments)):
             e = self.__mem_segments[i]
             if e != None:
@@ -42,16 +48,18 @@ class MEM(object):
                 print(e)
 
     def get_address(self, address):
+        """Get byte at 'address' in global memory map."""
         rel = address % 65536
         base = int((address - rel) / 65536)
         seg = self.__mem_segments[base]
         return seg.get_byte(rel)
 
-    def set_address(self, address, byte_value):
+    def set_address(self, address, value):
+        """Set byte at 'address' with 'value' in global memory map."""
         rel = address % 65536
         base = int((address - rel) / 65536)
         seg = self.__mem_segments[base]
-        seg.set_byte(rel, byte_value)
+        seg.set_byte(rel, value)
 
 
 

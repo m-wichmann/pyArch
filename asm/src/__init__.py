@@ -9,7 +9,7 @@ def init_pyArch_asm():
 
 
 def initLogger():
-    import pyArch_asm.logger
-    return pyArch_asm.logger.PyArchLogger()
+    import src.logger
+    return src.logger.PyArchLogger()
 
 init_pyArch_asm()

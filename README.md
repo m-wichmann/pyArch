@@ -4,8 +4,9 @@ pyArch
 Tools (simulator, assembler) for a new developed cpu architecture.
 
 ## Directory structure
-* arch  -> simulator (reference implementation)
+* sim   -> simulator (reference implementation)
 * asm   -> assembler
+* dbg   -> debugger
 * doc   -> documentation
 
 ## Warning

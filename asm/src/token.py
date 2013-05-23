@@ -19,6 +19,7 @@ class Tokenizer(object):
         for l in lines_cut:
             token = {}
             temp = l.split()
+
             token["instr"] = temp[0]
             try:
                 token["op1"]   = temp[1].replace(',','')

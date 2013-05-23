@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Set up the logger fpr pyArch"""
+
 import logging
 
 class PyArchLogger(object):

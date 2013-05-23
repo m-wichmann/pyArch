@@ -1,18 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Main file to start a simulation."""
+
+# TODO:
+# - replace this file with something better
+# - implement the whole 'system' thing -> build your own cpu
+
+# cmd line parsing
 import argparse
 
-import pyArch
-import pyArch.bus
-import pyArch.sys
-import pyArch.cpu
-import pyArch.mem
-import pyArch.ram
-import pyArch.rom
-import pyArch.mio
+import src
+import src.bus
+import src.sys
+import src.cpu
+import src.mem
+import src.ram
+import src.rom
+import src.mio
 
 def pyArch_main(romfile, stepcount):
+    """Simulator main method. Runs the code in 'romfile' for 'stepcount' steps."""
     cpu = __init(romfile)
 
     for i in range(stepcount):
@@ -20,20 +28,21 @@ def pyArch_main(romfile, stepcount):
 
 
 def __init(romfile):
+    """Init this system. In future the system should be configured by the user."""
     # sys init
-#    sys = pyArch.sys.SYS()
+#    sys = src.sys.SYS()
 
     # bus init
-    bus = pyArch.bus.BUS()
+    bus = src.bus.BUS()
 
     # cpu init
-    cpu = pyArch.cpu.CPU(bus)
+    cpu = src.cpu.CPU(bus)
 
     # mem init
-    ram = pyArch.ram.RAM()
-    rom = pyArch.rom.ROM(romfile)
-    mio = pyArch.mio.MIO()
-    mem = pyArch.mem.MEM()
+    ram = src.ram.RAM()
+    rom = src.rom.ROM(romfile)
+    mio = src.mio.MIO()
+    mem = src.mem.MEM()
     mem.add_segment(rom)
     mem.add_segment(ram)
     mem.add_segment(mio)
@@ -46,11 +55,13 @@ def __init(romfile):
 
 
 if __name__ == '__main__':
+    # cmd line argument parsing
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--romfile", action="store", dest="romfile", help="romfile")
     parser.add_argument("-s", "--stepcount", action="store", dest="stepcount", help="stepcount")
     args = parser.parse_args()
 
+    # define default values and read cmd line options
     romfile = 'test.rom'
     stepcount = 10
     if args.romfile:
@@ -58,4 +69,5 @@ if __name__ == '__main__':
     if args.stepcount:
         stepcount = int(args.stepcount)
 
+    # call main method
     pyArch_main(romfile, stepcount)

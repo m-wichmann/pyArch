@@ -9,8 +9,8 @@ def init_pyArch():
 
 
 def initLogger():
-    import pyArch.logger
-    return pyArch.logger.PyArchLogger()
+    import src.logger
+    return src.logger.PyArchLogger()
 
 
 init_pyArch()

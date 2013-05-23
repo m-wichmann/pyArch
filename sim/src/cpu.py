@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pyArch
-import pyArch.cpu_mod.alu
+import src
+import src.cpu_mod.alu
 
 
 
 class CPU(object):
-
+    """Represents one CPU. This contains the alu and some registers."""
     def __init__(self, bus):
-        pyArch.LOGGER.log("init CPU completed","INFO")
+        src.LOGGER.log("init CPU completed","INFO")
 
         # create instance of submodule
-        self.__alu = pyArch.cpu_mod.alu.ALU(self)
+        self.__alu = src.cpu_mod.alu.ALU(self)
         self.__bus = bus
         # create cpu register
         self.__create_cpu_regs()
@@ -31,13 +31,18 @@ class CPU(object):
                          "r24": 0, "r25": 0, "r26": 0, "r27": 0, 
                          "r28": 0, "r29": 0, "r30": 0, "r31": 0}
 
-        # TODO: make sp dynamic
+        # TODO: make sp dynamic/configurable
         self._core_regs = {"ip": 0, "sp": 0x00010000, "sreg": 0}
 
     def next_step(self):
+        """Run on cpu clock cycle."""
+
+        # Singleton for mem
+        # Can't be assigned before, sice mem must be set up after cpu
         if self._mem == None:
             self._mem = self.__bus.get_mem()
 
+        # get instruction at 'ip'
         raw_instr = self._mem.get_address(self._core_regs["ip"])
 
         instr = (raw_instr & 0x000000ff)

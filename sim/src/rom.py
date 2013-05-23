@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pyArch
+import src
 
 # The size of a ROM module is fixed to 65536 * 16 bit (256 kb)
 #
@@ -9,15 +9,16 @@ import pyArch
 # TODO: handling of larger files has to happen somewhere else.
 
 class ROM(object):
-
+    """Represents one 256kb ROM block."""
     def __init__(self, filename):
-        pyArch.LOGGER.log("init ROM completed","INFO")
+        src.LOGGER.log("init ROM completed","INFO")
         self.__data = [0] * 65536
         self.__load_rom_content(filename)
 
     # load the inital rom content from a file
-    # TODO: better parsing. For now we expect following format:
-    # 01234567 abcdef01 00ff00ff...
+    # TODO: 
+    # - better parsing. For now we expect following format: 01234567 abcdef01 00ff00ff...
+    # - support for binary images
     def __load_rom_content(self, filename):
         fd = open(filename, 'r')
         i = 0
@@ -29,6 +30,7 @@ class ROM(object):
 
     # a byte can only be set, since its a ROM
     def get_byte(self, address):
+        """"""
         address = address % 65536
         return self.__data[address]
 

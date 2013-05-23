@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pyArch
+import src
 
 class BUS(object):
     """Manages all hardware blocks and makes them accessible for other blocks.
@@ -9,7 +9,7 @@ class BUS(object):
     """
 
     def __init__(self):
-        pyArch.LOGGER.log("init BUS completed","INFO")
+        src.LOGGER.log("init BUS completed","INFO")
 #        self.__modules = [] # TODO: maybe make specific vars or dict for modules
         self.__cpu = None
         self.__mem = None

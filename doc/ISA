@@ -19,8 +19,6 @@ This file describes the ISA.
     * set bit, clear bit, clear reg
     * test, cmp
     * branch (if equal...)
-    * push, pop
-    * shift, rotate
     * flag set, clear
 
 - 0x00 - 0x0F       Basic instructions (nop...)
@@ -52,7 +50,7 @@ This file describes the ISA.
 - 0x40 - 0x4F       Reserved
     - 0x42            egg (easteregg ;-))
 - 0x50 - 0x5F       Control flow (jmp, call, ret...)
-    - 0x50            jmp (direct jump, if register else relative +-7bit; register|constant)
+    + 0x50            jmp (direct jump, if register else relative +-7bit; register|constant)
     - 0x58            call (call; store ip)
     - 0x59            ret (return; get ip back)
 - 0xA0 - 0xFF       Systemcalls (e.g. print)

@@ -3,10 +3,10 @@
 
 import argparse
 
-import pyArch_asm
-import pyArch_asm.token
-import pyArch_asm.parser
-import pyArch_asm.output
+import src
+import src.token
+import src.parser
+import src.output
 
 def read_file(infile):
     fd = open(infile, 'r')
@@ -32,9 +32,9 @@ def pyArch_asm_main():
     if args.outfile:
         outfile = args.outfile
 
-    tokenizer = pyArch_asm.token.Tokenizer()
-    parser = pyArch_asm.parser.Parser()
-    output = pyArch_asm.output.Output()
+    tokenizer = src.token.Tokenizer()
+    parser = src.parser.Parser()
+    output = src.output.Output()
 
     lines = read_file(infile)
     tokens = tokenizer.tokenize(lines)

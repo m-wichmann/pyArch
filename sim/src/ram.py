@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pyArch
+import src
 
 # RAM
 #
@@ -15,20 +15,23 @@ import pyArch
 #
 
 class RAM(object):
-
+    """Represents one 256kb ram block"""
     def __init__(self):
-        pyArch.LOGGER.log("init RAM completed","INFO")    
+        src.LOGGER.log("init RAM completed","INFO")    
         self.__data = [0] * 65536
 
     def get_byte(self, address):
+        """Get byte at 'address' in local memory map."""
         address = address % 65536
         return self.__data[address]
 
-    def set_byte(self, address, byte_value):
+    def set_byte(self, address, value):
+        """Set byte at 'address' with 'value' in local memory map."""
         address = address % 65536
-        self.__data[address] = byte_value
+        self.__data[address] = value
 
     def dump_ram_whole(self):
+        """Print whole ram content. Only for debugging."""
         ret = ""
         line_length = 8
         for i in range(len(self.__data)):
@@ -44,6 +47,7 @@ class RAM(object):
                 print("")
 
     def dump_ram_segment(self, address):
+        """Print ram content around 'address'. This displays 16 fields before and 23 fields after 'address'."""
         ret = ""
         line_length = 8
         for i in range(address - 16, address + 24):
