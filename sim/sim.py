@@ -25,7 +25,6 @@ def pyArch_main(romfile, stepcount):
 
     for i in range(stepcount):
         cpu.next_step()
-        cpu.print_regs()
 
 
 def __init(romfile):

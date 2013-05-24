@@ -50,11 +50,17 @@ This file describes the ISA.
     + 0x3F            tst (set zero and sign flag for register; register)
 - 0x40 - 0x4F       Reserved
     - 0x42            egg (easteregg ;-))
-- 0x50 - 0x5F       Control flow (jmp, call, ret...)
+- 0x50 - 0x8F       Control flow (jmp, call, ret...)
     + 0x50            jmp (direct jump, if register else relative +-7bit; register|constant)
-    - 0x58            call (call; store ip)
-    - 0x59            ret (return; get ip back)
-    - 0x5F            cmp (compare/subtract register with register|constant; register, register|constant)
+
+    - 0x60            breq (branch if equal (z = 1); register|constant)
+    - 0x61            brne (branch not equal (z = 0); register|constant)
+    - 0x62            brp  (branch if positive (n = 0); register|constant)
+    - 0x63            brn  (branch if negative (n = 1); register|constant)
+
+    - 0x88            call (call; store ip)
+    - 0x89            ret (return; get ip back)
+    + 0x8F            cmp (compare/subtract register with register|constant; register, register|constant)
 - 0xA0 - 0xFF       Systemcalls (e.g. print)
     + 0xA0            prt (print value of register)
 

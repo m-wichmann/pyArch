@@ -50,7 +50,11 @@ class ALU(object):
         self.instructions[0x3F] = self.__OP_tst
 
         self.instructions[0x50] = self.__OP_jmp
-        self.instructions[0x5F] = self.__OP_cmp
+        self.instructions[0x60] = self.__OP_breq
+        self.instructions[0x61] = self.__OP_brne
+        self.instructions[0x62] = self.__OP_brp
+        self.instructions[0x63] = self.__OP_brn
+        self.instructions[0x8F] = self.__OP_cmp
 
         self.instructions[0xA0] = self.__OP_prt
 
@@ -400,8 +404,80 @@ class ALU(object):
 
         src.LOGGER.log("  jmp: -> 0x%08X" % (num_op), "DEBUG")
     
+    def __OP_breq(self, flags, op1, op2):
+        """0x60"""
+        src.LOGGER.log("instruction: breq","DEBUG")
+
+        condition = self.__cpu._sreg["z"]
+        if condition:
+            num_op = 0
+            if flags[0]:    # relative
+                num_op = self.__cpu._core_regs["ip"] + op1
+            else:           # absolute
+                num_op = self.__cpu._gp_regs["r" + str(op1)]
+
+            self.__cpu._core_regs["ip"] = num_op
+            src.LOGGER.log("  breq: -> 0x%08X" % (num_op), "DEBUG")
+        else:
+            self.__increase_ip(1)
+            src.LOGGER.log("  breq: -> --------", "DEBUG")
+
+    def __OP_brne(self, flags, op1, op2):
+        """0x61"""
+        src.LOGGER.log("instruction: brne","DEBUG")
+
+        condition = not self.__cpu._sreg["z"]
+        if condition:
+            num_op = 0
+            if flags[0]:    # relative
+                num_op = self.__cpu._core_regs["ip"] + op1
+            else:           # absolute
+                num_op = self.__cpu._gp_regs["r" + str(op1)]
+
+            self.__cpu._core_regs["ip"] = num_op
+            src.LOGGER.log("  brne: -> 0x%08X" % (num_op), "DEBUG")
+        else:
+            self.__increase_ip(1)
+            src.LOGGER.log("  brne: -> --------", "DEBUG")
+
+    def __OP_brp(self, flags, op1, op2):
+        """0x62"""
+        src.LOGGER.log("instruction: brp","DEBUG")
+
+        condition = not self.__cpu._sreg["n"]
+        if condition:
+            num_op = 0
+            if flags[0]:    # relative
+                num_op = self.__cpu._core_regs["ip"] + op1
+            else:           # absolute
+                num_op = self.__cpu._gp_regs["r" + str(op1)]
+
+            self.__cpu._core_regs["ip"] = num_op
+            src.LOGGER.log("  brp: -> 0x%08X" % (num_op), "DEBUG")
+        else:
+            self.__increase_ip(1)
+            src.LOGGER.log("  brp: -> --------", "DEBUG")
+
+    def __OP_brn(self, flags, op1, op2):
+        """0x60"""
+        src.LOGGER.log("instruction: brn","DEBUG")
+
+        condition = self.__cpu._sreg["n"]
+        if condition:
+            num_op = 0
+            if flags[0]:    # relative
+                num_op = self.__cpu._core_regs["ip"] + op1
+            else:           # absolute
+                num_op = self.__cpu._gp_regs["r" + str(op1)]
+
+            self.__cpu._core_regs["ip"] = num_op
+            src.LOGGER.log("  brn: -> 0x%08X" % (num_op), "DEBUG")
+        else:
+            self.__increase_ip(1)
+            src.LOGGER.log("  brn: -> --------", "DEBUG")
+
     def __OP_cmp(self, flags, op1, op2):
-        """0x5F"""
+        """0x8F"""
         src.LOGGER.log("instruction: cmp","DEBUG")
 
         num_op1 = self.__cpu._gp_regs["r" + str(op1)]

@@ -48,7 +48,8 @@ class Parser(object):
                 op2 = int(op2.replace("r",""), 16)
 
             flags = 0
-            if t["instr"] == 'ld' or t["instr"] == 'st':
+            i = t["instr"]
+            if i == 'ld' or i == 'st':
                 if not "$" in raw_op2:
                     flags = flags | (1 << 0)   
 
@@ -60,7 +61,7 @@ class Parser(object):
                 address3 = ((op2 & 0xff000000) >> 24)
 
                 parsed_tokens.append((address0,address1,address2,address3)) # address
-            elif t["instr"] == 'jmp':
+            elif (i == 'jmp' or i == 'breq' or i == 'brne' or i == 'brp' or i == 'brn'):
                 if not "r" in raw_op1:
                     flags = flags | (1 << 0)
                 parsed_tokens.append((op_code, flags, op1, op2))

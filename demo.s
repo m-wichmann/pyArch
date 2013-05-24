@@ -1,22 +1,14 @@
-ld  r1, 0xdeadbeef
-ld  r2, 0xdecafbad
+ld  r6, 0xdeadbeef
+ld  r7, 0xdecafbad
 
-push r2
-push r1
+ld  r1, 0xf0000001
 
-pop r7
-pop r8
+ld  r3, @mark1
 
+tst r1
+
+brp r3
+prt r6
+
+mark1:
 prt r7
-prt r8
-
-ld  r3, @mark
-jmp r3
-
-prt r1
-
-mark:
-prt r2
-
-add r1, r2
-prt r1

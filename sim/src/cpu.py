@@ -22,7 +22,6 @@ class CPU(object):
     def init_mem(self):
         self._mem = self.__bus.get_mem()
         sp = self._mem.get_ram_end()
-        print("0x%08X" % sp)
         self._core_regs["sp"] = sp
 
     def __create_cpu_regs(self):
