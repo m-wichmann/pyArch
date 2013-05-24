@@ -47,12 +47,14 @@ This file describes the ISA.
     + 0x36            lsr (logical shift right; register, shift_count)
     + 0x37            rol (rotate left; register, rotate_count)
     + 0x38            ror (rotate right; register, rotate_count)
+    + 0x3F            tst (set zero and sign flag for register; register)
 - 0x40 - 0x4F       Reserved
     - 0x42            egg (easteregg ;-))
 - 0x50 - 0x5F       Control flow (jmp, call, ret...)
     + 0x50            jmp (direct jump, if register else relative +-7bit; register|constant)
     - 0x58            call (call; store ip)
     - 0x59            ret (return; get ip back)
+    - 0x5F            cmp (compare/subtract register with register|constant; register, register|constant)
 - 0xA0 - 0xFF       Systemcalls (e.g. print)
     + 0xA0            prt (print value of register)
 

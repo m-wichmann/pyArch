@@ -37,8 +37,11 @@ class CPU(object):
                          "r24": 0, "r25": 0, "r26": 0, "r27": 0, 
                          "r28": 0, "r29": 0, "r30": 0, "r31": 0}
 
-        # TODO: make sp dynamic/configurable
-        self._core_regs = {"ip": 0, "sp": 0, "sreg": 0}
+        self._core_regs = {"ip": 0, "sp": 0}
+        self._sreg = {"z": False, # zero
+                      "c": False, # carry
+                      "n": False, # negative
+                     }
 
     def next_step(self):
         """Run one cpu clock cycle."""
@@ -76,9 +79,13 @@ class CPU(object):
 
         print("=====")
 
-        list_of_regs = ["ip", "sp", "sreg"]
+        list_of_regs = ["ip", "sp"]
         for e in list_of_regs:
             print("%4s: 0x%08X" % (e, self._core_regs[e]))
+
+        list_of_regs = ["z", "c", "n"]
+        for e in list_of_regs:
+            print("%4s: %r" % (e, self._sreg[e]))            
 
 
 

@@ -25,6 +25,7 @@ def pyArch_main(romfile, stepcount):
 
     for i in range(stepcount):
         cpu.next_step()
+        cpu.print_regs()
 
 
 def __init(romfile):
@@ -46,8 +47,6 @@ def __init(romfile):
     mem.add_segment(rom)
     mem.add_segment(ram)
     mem.add_segment(mio)
-
-    mem.print_segments()
 
     # populate bus
     bus.register_mem(mem)

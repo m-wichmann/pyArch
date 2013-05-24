@@ -67,7 +67,6 @@ class Parser(object):
             else:
                 if not "r" in raw_op2:
                     flags = flags | (1 << 0)
-
                 parsed_tokens.append((op_code, flags, op1, op2)) # instruction
 
         return parsed_tokens

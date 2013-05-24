@@ -4,8 +4,8 @@
 """The ALU contains all possibile operations."""
 
 # TODO:
-# - flags: carry, sign...!!!
-# - signed numbers
+# - flags: carry!!!
+# - signed numbers testing
 # - refactor name 'alu'
 
 import src
@@ -47,14 +47,31 @@ class ALU(object):
         self.instructions[0x36] = self.__OP_lsr
         self.instructions[0x37] = self.__OP_rol
         self.instructions[0x38] = self.__OP_ror
+        self.instructions[0x3F] = self.__OP_tst
 
         self.instructions[0x50] = self.__OP_jmp
+        self.instructions[0x5F] = self.__OP_cmp
 
         self.instructions[0xA0] = self.__OP_prt
 
     ##### Util         #####
     def __increase_ip(self, amount):
+        """Increse isntruction pointer by 'amount'."""
         self.__cpu._core_regs["ip"] = self.__cpu._core_regs["ip"] + amount
+
+    def __set_sreg_s_z(self, number):
+        """Update sind and zero flag for 'number'."""
+        # zero flag
+        if number == 0:
+            self.__cpu._sreg["z"] = True
+        else:
+            self.__cpu._sreg["z"] = False
+
+        # negative flag
+        if (number & (1<<31)) == (1<<31):
+            self.__cpu._sreg["n"] = True
+        else:
+            self.__cpu._sreg["n"] = False
 
     ##### Instructions #####
     def __OP_template(self, flags, op1, op2):
@@ -120,6 +137,7 @@ class ALU(object):
 
         sp = self.__cpu._core_regs["sp"]
         num = self.__cpu._mem.get_address(sp)
+
         self.__cpu._gp_regs["r" + str(op1)] = num
 
         src.LOGGER.log("  stack pop: 0x%08X -> r%i" % (num, op1), "DEBUG")
@@ -136,6 +154,9 @@ class ALU(object):
         num_op2 = op2 if op_number else self.__cpu._gp_regs["r" + str(op2)]
 
         ret = (num_op1 + num_op2) & 0xffffffff
+
+        self.__set_sreg_s_z(ret)
+
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  %i + %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
@@ -150,6 +171,9 @@ class ALU(object):
         num_op2 = op2 if op_number else self.__cpu._gp_regs["r" + str(op2)]
 
         ret = (num_op1 - num_op2) & 0xffffffff
+
+        self.__set_sreg_s_z(ret)
+
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  %i - %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
@@ -164,6 +188,9 @@ class ALU(object):
         num_op2 = op2 if op_number else self.__cpu._gp_regs["r" + str(op2)]
 
         ret = (num_op1 * num_op2) & 0xffffffff
+
+        self.__set_sreg_s_z(ret)
+
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  %i * %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
@@ -178,6 +205,9 @@ class ALU(object):
         num_op2 = op2 if op_number else self.__cpu._gp_regs["r" + str(op2)]
 
         ret = (num_op1 / num_op2) & 0xffffffff
+
+        self.__set_sreg_s_z(ret)
+
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  %i / %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
@@ -186,7 +216,9 @@ class ALU(object):
         """0x2E"""
         src.LOGGER.log("instruction: inc","DEBUG")
 
-        self.__cpu._gp_regs["r" + str(op1)] = (self.__cpu._gp_regs["r" + str(op1)] + 1) & 0xffffffff
+        ret = (self.__cpu._gp_regs["r" + str(op1)] + 1) & 0xffffffff
+        self.__cpu._gp_regs["r" + str(op1)] = ret
+        self.__set_sreg_s_z(ret)
 
         src.LOGGER.log("  inc: r%i -> 0x%08X" % (op1, self.__cpu._gp_regs["r" + str(op1)]), "DEBUG")
         self.__increase_ip(1)
@@ -195,7 +227,9 @@ class ALU(object):
         """0x2F"""
         src.LOGGER.log("instruction: dec","DEBUG")
 
-        self.__cpu._gp_regs["r" + str(op1)] = (self.__cpu._gp_regs["r" + str(op1)] - 1) & 0xffffffff
+        ret = (self.__cpu._gp_regs["r" + str(op1)] - 1) & 0xffffffff
+        self.__cpu._gp_regs["r" + str(op1)] = ret
+        self.__set_sreg_s_z(ret)
 
         src.LOGGER.log("  dec: r%i -> 0x%08X" % (op1, self.__cpu._gp_regs["r" + str(op1)]), "DEBUG")
         self.__increase_ip(1)
@@ -212,6 +246,8 @@ class ALU(object):
 
         ret = num_op1 & num_op2
 
+        self.__set_sreg_s_z(ret)
+
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  %i & %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
@@ -226,6 +262,8 @@ class ALU(object):
         num_op2 = op2 if op_number else self.__cpu._gp_regs["r" + str(op2)]
 
         ret = num_op1 | num_op2
+
+        self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  %i | %i = %i" % (num_op1, num_op2, ret), "DEBUG")
@@ -242,6 +280,8 @@ class ALU(object):
 
         ret = num_op1 ^ num_op2
 
+        self.__set_sreg_s_z(ret)
+
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  %i ^ %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
@@ -253,6 +293,8 @@ class ALU(object):
         num_op = self.__cpu._gp_regs["r" + str(op1)]
 
         ret = (~num_op) & 0xffffffff
+
+        self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  com: %i -> %i" % (num_op, ret), "DEBUG")
@@ -266,6 +308,8 @@ class ALU(object):
 
         ret = ((~num_op) + 1) & 0xffffffff
 
+        self.__set_sreg_s_z(ret)
+
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  neg: %i -> %i" % (num_op, ret), "DEBUG")
         self.__increase_ip(1)
@@ -278,6 +322,8 @@ class ALU(object):
 
         ret = (num_op << op2) & 0xffffffff
 
+        self.__set_sreg_s_z(ret)
+
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  lsl: %i -> %i" % (num_op, ret), "DEBUG")
         self.__increase_ip(1)
@@ -289,6 +335,8 @@ class ALU(object):
         num_op = self.__cpu._gp_regs["r" + str(op1)]
 
         ret = (num_op >> op2) & 0xffffffff
+
+        self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  lsr: %i -> %i" % (num_op, ret), "DEBUG")
@@ -304,6 +352,8 @@ class ALU(object):
         for i in range(op2):
             ret = ((ret << 1) | ((ret & 0x80000000) >> 31)) & 0xffffffff
 
+        self.__set_sreg_s_z(ret)
+
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  rol: %i -> %i" % (num_op, ret), "DEBUG")
         self.__increase_ip(1)
@@ -318,8 +368,18 @@ class ALU(object):
         for i in range(op2):
             ret = ((ret >> 1) | ((ret & 1) << 31)) & 0xffffffff
 
+        self.__set_sreg_s_z(ret)
+
         self.__cpu._gp_regs["r" + str(op1)] = ret
         src.LOGGER.log("  ror: %i -> %i" % (num_op, ret), "DEBUG")
+        self.__increase_ip(1)
+
+    def __OP_tst(self, flags, op1, op2):
+        src.LOGGER.log("instruction: tst","DEBUG")
+
+        num_op = self.__cpu._gp_regs["r" + str(op1)]
+        self.__set_sreg_s_z(num_op)
+        src.LOGGER.log("  tst: %i" % (num_op), "DEBUG")
         self.__increase_ip(1)
 
     ## Reserved ##
@@ -340,6 +400,18 @@ class ALU(object):
 
         src.LOGGER.log("  jmp: -> 0x%08X" % (num_op), "DEBUG")
     
+    def __OP_cmp(self, flags, op1, op2):
+        """0x5F"""
+        src.LOGGER.log("instruction: cmp","DEBUG")
+
+        num_op1 = self.__cpu._gp_regs["r" + str(op1)]
+        num_op2 = self.__cpu._gp_regs["r" + str(op2)]
+
+        ret = num_op1 - num_op2
+        self.__set_sreg_s_z(ret)
+
+        src.LOGGER.log("  cmp: 0x%08X - 0x%08X" % (num_op1, num_op2), "DEBUG")
+        self.__increase_ip(1)
 
     ## Systemcalls ##
     def __OP_prt(self, flags, op1, op2):
