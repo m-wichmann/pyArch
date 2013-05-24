@@ -23,11 +23,22 @@ class MEM(object):
         self.__mem_segments = [None] * 65536
 
     def get_ram_base(self):
-        # get base address of ram, since ram object is not visible outside
-        # TODO: not needed
+        """Get base address of ram"""
         for s in self.__mem_segments:
             if isinstance(s, src.ram.RAM):
                 return (self.__mem_segments.index(s) * 65536)
+        return None
+
+    def get_ram_end(self):
+        """Can be used as stack pointer"""
+        last = None
+        for s in self.__mem_segments:
+            if isinstance(s, src.ram.RAM):
+                last = s
+
+        if last != None:
+            return ((self.__mem_segments.index(last) * 65536) + 65535)
+
         return None
 
     def add_segment(self, segment):

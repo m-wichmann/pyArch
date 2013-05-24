@@ -47,9 +47,14 @@ def __init(romfile):
     mem.add_segment(ram)
     mem.add_segment(mio)
 
+    mem.print_segments()
+
     # populate bus
     bus.register_mem(mem)
     bus.register_cpu(cpu)
+
+    # init mem specific parts in cpu
+    cpu.init_mem()
 
     return cpu
 

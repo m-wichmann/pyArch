@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import src
-import src.cpu_mod.alu
+import src.alu
 
 
 
@@ -12,12 +12,18 @@ class CPU(object):
         src.LOGGER.log("init CPU completed","INFO")
 
         # create instance of submodule
-        self.__alu = src.cpu_mod.alu.ALU(self)
+        self.__alu = src.alu.ALU(self)
         self.__bus = bus
         # create cpu register
         self.__create_cpu_regs()
 
         self._mem = None
+
+    def init_mem(self):
+        self._mem = self.__bus.get_mem()
+        sp = self._mem.get_ram_end()
+        print("0x%08X" % sp)
+        self._core_regs["sp"] = sp
 
     def __create_cpu_regs(self):
         # TODO: maybe use orderd dict to make the print easier
@@ -32,15 +38,10 @@ class CPU(object):
                          "r28": 0, "r29": 0, "r30": 0, "r31": 0}
 
         # TODO: make sp dynamic/configurable
-        self._core_regs = {"ip": 0, "sp": 0x00010000, "sreg": 0}
+        self._core_regs = {"ip": 0, "sp": 0, "sreg": 0}
 
     def next_step(self):
-        """Run on cpu clock cycle."""
-
-        # Singleton for mem
-        # Can't be assigned before, sice mem must be set up after cpu
-        if self._mem == None:
-            self._mem = self.__bus.get_mem()
+        """Run one cpu clock cycle."""
 
         # get instruction at 'ip'
         raw_instr = self._mem.get_address(self._core_regs["ip"])

@@ -107,7 +107,7 @@ class ALU(object):
 
         self.__cpu._mem.set_address(sp, num_op1)
 
-        self.__cpu._core_regs["sp"] = self.__cpu._core_regs["sp"] + 1
+        self.__cpu._core_regs["sp"] = self.__cpu._core_regs["sp"] - 1
 
         src.LOGGER.log("  stack push: 0x%08X" % (num_op1), "DEBUG")
         self.__increase_ip(1)
@@ -116,7 +116,7 @@ class ALU(object):
         """0x14"""
         src.LOGGER.log("instruction: pop","DEBUG")
 
-        self.__cpu._core_regs["sp"] = self.__cpu._core_regs["sp"] - 1
+        self.__cpu._core_regs["sp"] = self.__cpu._core_regs["sp"] + 1
 
         sp = self.__cpu._core_regs["sp"]
         num = self.__cpu._mem.get_address(sp)
