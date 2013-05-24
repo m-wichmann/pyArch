@@ -54,6 +54,8 @@ class ALU(object):
         self.instructions[0x61] = self.__OP_brne
         self.instructions[0x62] = self.__OP_brp
         self.instructions[0x63] = self.__OP_brn
+        self.instructions[0x88] = self.__OP_call
+        self.instructions[0x89] = self.__OP_ret
         self.instructions[0x8F] = self.__OP_cmp
 
         self.instructions[0xA0] = self.__OP_prt
@@ -475,6 +477,36 @@ class ALU(object):
         else:
             self.__increase_ip(1)
             src.LOGGER.log("  brn: -> --------", "DEBUG")
+
+    def __OP_call(self, flags, op1, op2):
+        """0x88"""
+        src.LOGGER.log("instruction: call","DEBUG")
+
+        self.__cpu._mem.set_address(self.__cpu._core_regs["sp"], self.__cpu._core_regs["ip"] + 1)
+        self.__cpu._core_regs["sp"] = self.__cpu._core_regs["sp"] - 1
+
+        num_op = 0
+        if flags[0]:    # relative
+            num_op = self.__cpu._core_regs["ip"] + op1
+        else:           # absolute
+            num_op = self.__cpu._gp_regs["r" + str(op1)]
+
+        self.__cpu._core_regs["ip"] = num_op
+
+        src.LOGGER.log("  call: -> 0x%08X" % (num_op), "DEBUG")
+
+    def __OP_ret(self, flags, op1, op2):
+        """0x89"""
+        src.LOGGER.log("instruction: ret","DEBUG")
+
+        self.__cpu._core_regs["sp"] = self.__cpu._core_regs["sp"] + 1
+
+        sp = self.__cpu._core_regs["sp"]
+        num = self.__cpu._mem.get_address(sp)
+
+        self.__cpu._core_regs["ip"] = num
+
+        src.LOGGER.log("  ret: -> 0x%08X" % self.__cpu._core_regs["ip"], "DEBUG")
 
     def __OP_cmp(self, flags, op1, op2):
         """0x8F"""

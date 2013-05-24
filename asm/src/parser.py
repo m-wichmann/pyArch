@@ -61,7 +61,7 @@ class Parser(object):
                 address3 = ((op2 & 0xff000000) >> 24)
 
                 parsed_tokens.append((address0,address1,address2,address3)) # address
-            elif (i == 'jmp' or i == 'breq' or i == 'brne' or i == 'brp' or i == 'brn'):
+            elif (i == 'jmp' or i == 'breq' or i == 'brne' or i == 'brp' or i == 'brn' or i == 'call' or i == 'ret'):
                 if not "r" in raw_op1:
                     flags = flags | (1 << 0)
                 parsed_tokens.append((op_code, flags, op1, op2))

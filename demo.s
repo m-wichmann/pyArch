@@ -1,14 +1,26 @@
-ld  r6, 0xdeadbeef
-ld  r7, 0xdecafbad
+ld      r31, 0xdeadbeef # var to print
 
-ld  r1, 0xf0000001
+ld      r4, @print
+ld      r5, @end
+ld      r6, @top
 
-ld  r3, @mark1
+ld      r0, 2          # run var
+ld      r1, 0           # end var
 
-tst r1
+top:
+cmp     r0, r1
+breq    r5
 
-brp r3
-prt r6
+call    r4
+add     r1, 1
 
-mark1:
-prt r7
+jmp r6
+
+print:
+prt     r31
+ret
+
+
+
+
+end:

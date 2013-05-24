@@ -53,10 +53,10 @@ This file describes the ISA.
 - 0x50 - 0x8F       Control flow (jmp, call, ret...)
     + 0x50            jmp (direct jump, if register else relative +-7bit; register|constant)
 
-    - 0x60            breq (branch if equal (z = 1); register|constant)
-    - 0x61            brne (branch not equal (z = 0); register|constant)
-    - 0x62            brp  (branch if positive (n = 0); register|constant)
-    - 0x63            brn  (branch if negative (n = 1); register|constant)
+    + 0x60            breq (branch if equal (z = 1); register|constant)
+    + 0x61            brne (branch not equal (z = 0); register|constant)
+    + 0x62            brp  (branch if positive (n = 0); register|constant)
+    + 0x63            brn  (branch if negative (n = 1); register|constant)
 
     - 0x88            call (call; store ip)
     - 0x89            ret (return; get ip back)
