@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import src
+import backend
 
 # RAM
 #
@@ -17,7 +17,7 @@ import src
 class RAM(object):
     """Represents one 256kb ram block"""
     def __init__(self):
-        src.LOGGER.log("init RAM completed","INFO")    
+        backend.LOGGER.log("init RAM completed","INFO")    
         self.__data = [0] * 65536
 
     def get_byte(self, address):

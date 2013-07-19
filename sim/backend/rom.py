@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import src
+import backend
 
 # The size of a ROM module is fixed to 65536 * 16 bit (256 kb)
 #
@@ -11,7 +11,7 @@ import src
 class ROM(object):
     """Represents one 256kb ROM block."""
     def __init__(self, filename):
-        src.LOGGER.log("init ROM completed","INFO")
+        backend.LOGGER.log("init ROM completed","INFO")
         self.__data = [0] * 65536
         self.__load_rom_content(filename)
 

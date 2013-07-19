@@ -10,16 +10,7 @@
 # cmd line parsing
 import argparse
 
-#import src
-#import src.bus
-#import src.sys
-#import src.cpu
-#import src.mem
-#import src.ram
-#import src.rom
-#import src.mio
-
-from src import *
+from backend import *
 
 
 def pyArch_main(romfile, stepcount):

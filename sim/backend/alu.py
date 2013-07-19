@@ -8,7 +8,7 @@
 # - signed numbers testing
 # - refactor name 'alu'
 
-import src
+import backend
 
 class ALU(object):
     def __init__(self, cpu):
@@ -16,7 +16,7 @@ class ALU(object):
         self.__cpu = cpu
         # register all instructions
         self.__register_instr()
-        src.LOGGER.log("init ALU completed","INFO")
+        backend.LOGGER.log("init ALU completed","INFO")
 
     def __register_instr(self):
         """This method basically links the op_codes (byte value isntructions) to python methods."""
@@ -90,40 +90,40 @@ class ALU(object):
     ## Basic instructions ##
     def __OP_nop(self, flags, op1, op2):
         """0x00"""
-        src.LOGGER.log("instruction: nop","DEBUG")
+        backend.LOGGER.log("instruction: nop","DEBUG")
         self.__increase_ip(1)
 
     ## Data handling ##
     def __OP_mov(self, flags, op1, op2):
         """0x10"""
-        src.LOGGER.log("instruction: mov","DEBUG")
+        backend.LOGGER.log("instruction: mov","DEBUG")
         self.__cpu._gp_regs["r" + str(op1)] = self.__cpu._gp_regs["r" + str(op2)]
-        src.LOGGER.log("  r%i = r%i" % (op1, op2), "DEBUG")
+        backend.LOGGER.log("  r%i = r%i" % (op1, op2), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_ld(self, flags, op1, op2):
         """0x11"""
-        src.LOGGER.log("instruction: ld","DEBUG")
+        backend.LOGGER.log("instruction: ld","DEBUG")
         readahead = self.__cpu.readahead()
         if (flags[0]):
             value = readahead
         else:
             value = self.__cpu._mem.get_address(readahead)
         self.__cpu._gp_regs["r" + str(op1)] = value
-        src.LOGGER.log("  r%i = %i" % (op1, value), "DEBUG")
+        backend.LOGGER.log("  r%i = %i" % (op1, value), "DEBUG")
         self.__increase_ip(2)
 
     def __OP_st(self, flags, op1, op2):
         """0x12"""
-        src.LOGGER.log("instruction: st","DEBUG")
+        backend.LOGGER.log("instruction: st","DEBUG")
         address = self.__cpu.readahead()
         self.__cpu._mem.set_address(address, self.__cpu._gp_regs["r" + str(op1)])
-        src.LOGGER.log("  0x%08X = %i" % (address, op1), "DEBUG")
+        backend.LOGGER.log("  0x%08X = %i" % (address, op1), "DEBUG")
         self.__increase_ip(2)
 
     def __OP_push(self, flags, op1, op2):
         """0x13"""
-        src.LOGGER.log("instruction: push","DEBUG")
+        backend.LOGGER.log("instruction: push","DEBUG")
 
         num_op1 = self.__cpu._gp_regs["r" + str(op1)]
         sp = self.__cpu._core_regs["sp"]
@@ -132,12 +132,12 @@ class ALU(object):
 
         self.__cpu._core_regs["sp"] = self.__cpu._core_regs["sp"] - 1
 
-        src.LOGGER.log("  stack push: 0x%08X" % (num_op1), "DEBUG")
+        backend.LOGGER.log("  stack push: 0x%08X" % (num_op1), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_pop(self, flags, op1, op2):
         """0x14"""
-        src.LOGGER.log("instruction: pop","DEBUG")
+        backend.LOGGER.log("instruction: pop","DEBUG")
 
         self.__cpu._core_regs["sp"] = self.__cpu._core_regs["sp"] + 1
 
@@ -146,13 +146,13 @@ class ALU(object):
 
         self.__cpu._gp_regs["r" + str(op1)] = num
 
-        src.LOGGER.log("  stack pop: 0x%08X -> r%i" % (num, op1), "DEBUG")
+        backend.LOGGER.log("  stack pop: 0x%08X -> r%i" % (num, op1), "DEBUG")
         self.__increase_ip(1)
 
     ## Arithmetic ##
     def __OP_add(self, flags, op1, op2):
         """0x20"""
-        src.LOGGER.log("instruction: add","DEBUG")
+        backend.LOGGER.log("instruction: add","DEBUG")
 
         op_number = flags[0]
 
@@ -164,12 +164,12 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  %i + %i = %i" % (num_op1, num_op2, ret), "DEBUG")
+        backend.LOGGER.log("  %i + %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_sub(self, flags, op1, op2):
         """0x21"""
-        src.LOGGER.log("instruction: sub","DEBUG")
+        backend.LOGGER.log("instruction: sub","DEBUG")
 
         op_number = flags[0]
 
@@ -181,12 +181,12 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  %i - %i = %i" % (num_op1, num_op2, ret), "DEBUG")
+        backend.LOGGER.log("  %i - %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_mul(self, flags, op1, op2):
         """0x22"""
-        src.LOGGER.log("instruction: mul","DEBUG")
+        backend.LOGGER.log("instruction: mul","DEBUG")
 
         op_number = flags[0]
 
@@ -198,12 +198,12 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  %i * %i = %i" % (num_op1, num_op2, ret), "DEBUG")
+        backend.LOGGER.log("  %i * %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_div(self, flags, op1, op2):
         """0x23"""
-        src.LOGGER.log("instruction: div","DEBUG")
+        backend.LOGGER.log("instruction: div","DEBUG")
 
         op_number = flags[0]
 
@@ -215,35 +215,35 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  %i / %i = %i" % (num_op1, num_op2, ret), "DEBUG")
+        backend.LOGGER.log("  %i / %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_inc(self, flags, op1, op2):
         """0x2E"""
-        src.LOGGER.log("instruction: inc","DEBUG")
+        backend.LOGGER.log("instruction: inc","DEBUG")
 
         ret = (self.__cpu._gp_regs["r" + str(op1)] + 1) & 0xffffffff
         self.__cpu._gp_regs["r" + str(op1)] = ret
         self.__set_sreg_s_z(ret)
 
-        src.LOGGER.log("  inc: r%i -> 0x%08X" % (op1, self.__cpu._gp_regs["r" + str(op1)]), "DEBUG")
+        backend.LOGGER.log("  inc: r%i -> 0x%08X" % (op1, self.__cpu._gp_regs["r" + str(op1)]), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_dec(self, flags, op1, op2):
         """0x2F"""
-        src.LOGGER.log("instruction: dec","DEBUG")
+        backend.LOGGER.log("instruction: dec","DEBUG")
 
         ret = (self.__cpu._gp_regs["r" + str(op1)] - 1) & 0xffffffff
         self.__cpu._gp_regs["r" + str(op1)] = ret
         self.__set_sreg_s_z(ret)
 
-        src.LOGGER.log("  dec: r%i -> 0x%08X" % (op1, self.__cpu._gp_regs["r" + str(op1)]), "DEBUG")
+        backend.LOGGER.log("  dec: r%i -> 0x%08X" % (op1, self.__cpu._gp_regs["r" + str(op1)]), "DEBUG")
         self.__increase_ip(1)
 
     ## Logic ##
     def __OP_and(self, flags, op1, op2):
         """0x30"""
-        src.LOGGER.log("instruction: and","DEBUG")
+        backend.LOGGER.log("instruction: and","DEBUG")
 
         op_number = flags[0]
 
@@ -255,12 +255,12 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  %i & %i = %i" % (num_op1, num_op2, ret), "DEBUG")
+        backend.LOGGER.log("  %i & %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_or(self, flags, op1, op2):
         """0x31"""
-        src.LOGGER.log("instruction: or","DEBUG")
+        backend.LOGGER.log("instruction: or","DEBUG")
 
         op_number = flags[0]
 
@@ -272,12 +272,12 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  %i | %i = %i" % (num_op1, num_op2, ret), "DEBUG")
+        backend.LOGGER.log("  %i | %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_xor(self, flags, op1, op2):
         """0x32"""
-        src.LOGGER.log("instruction: xor","DEBUG")
+        backend.LOGGER.log("instruction: xor","DEBUG")
 
         op_number = flags[0]
 
@@ -289,12 +289,12 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  %i ^ %i = %i" % (num_op1, num_op2, ret), "DEBUG")
+        backend.LOGGER.log("  %i ^ %i = %i" % (num_op1, num_op2, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_com(self, flags, op1, op2):
         """0x33"""
-        src.LOGGER.log("instruction: com","DEBUG")
+        backend.LOGGER.log("instruction: com","DEBUG")
 
         num_op = self.__cpu._gp_regs["r" + str(op1)]
 
@@ -303,12 +303,12 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  com: %i -> %i" % (num_op, ret), "DEBUG")
+        backend.LOGGER.log("  com: %i -> %i" % (num_op, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_neg(self, flags, op1, op2):
         """0x34"""
-        src.LOGGER.log("instruction: neg","DEBUG")
+        backend.LOGGER.log("instruction: neg","DEBUG")
 
         num_op = self.__cpu._gp_regs["r" + str(op1)]
 
@@ -317,12 +317,12 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  neg: %i -> %i" % (num_op, ret), "DEBUG")
+        backend.LOGGER.log("  neg: %i -> %i" % (num_op, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_lsl(self, flags, op1, op2):
         """0x35"""
-        src.LOGGER.log("instruction: lsl","DEBUG")
+        backend.LOGGER.log("instruction: lsl","DEBUG")
 
         num_op = self.__cpu._gp_regs["r" + str(op1)]
 
@@ -331,12 +331,12 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  lsl: %i -> %i" % (num_op, ret), "DEBUG")
+        backend.LOGGER.log("  lsl: %i -> %i" % (num_op, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_lsr(self, flags, op1, op2):
         """0x36"""
-        src.LOGGER.log("instruction: lsr","DEBUG")
+        backend.LOGGER.log("instruction: lsr","DEBUG")
 
         num_op = self.__cpu._gp_regs["r" + str(op1)]
 
@@ -345,12 +345,12 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  lsr: %i -> %i" % (num_op, ret), "DEBUG")
+        backend.LOGGER.log("  lsr: %i -> %i" % (num_op, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_rol(self, flags, op1, op2):
         """0x37"""
-        src.LOGGER.log("instruction: rol","DEBUG")
+        backend.LOGGER.log("instruction: rol","DEBUG")
 
         num_op = self.__cpu._gp_regs["r" + str(op1)]
 
@@ -361,12 +361,12 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  rol: %i -> %i" % (num_op, ret), "DEBUG")
+        backend.LOGGER.log("  rol: %i -> %i" % (num_op, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_ror(self, flags, op1, op2):
         """0x38"""
-        src.LOGGER.log("instruction: ror","DEBUG")
+        backend.LOGGER.log("instruction: ror","DEBUG")
 
         num_op = self.__cpu._gp_regs["r" + str(op1)]
 
@@ -377,15 +377,15 @@ class ALU(object):
         self.__set_sreg_s_z(ret)
 
         self.__cpu._gp_regs["r" + str(op1)] = ret
-        src.LOGGER.log("  ror: %i -> %i" % (num_op, ret), "DEBUG")
+        backend.LOGGER.log("  ror: %i -> %i" % (num_op, ret), "DEBUG")
         self.__increase_ip(1)
 
     def __OP_tst(self, flags, op1, op2):
-        src.LOGGER.log("instruction: tst","DEBUG")
+        backend.LOGGER.log("instruction: tst","DEBUG")
 
         num_op = self.__cpu._gp_regs["r" + str(op1)]
         self.__set_sreg_s_z(num_op)
-        src.LOGGER.log("  tst: %i" % (num_op), "DEBUG")
+        backend.LOGGER.log("  tst: %i" % (num_op), "DEBUG")
         self.__increase_ip(1)
 
     ## Reserved ##
@@ -394,7 +394,7 @@ class ALU(object):
     ## Control flow ##
     def __OP_jmp(self, flags, op1, op2):
         """0x50"""
-        src.LOGGER.log("instruction: jmp","DEBUG")
+        backend.LOGGER.log("instruction: jmp","DEBUG")
 
         num_op = 0
         if flags[0]:    # relative
@@ -404,11 +404,11 @@ class ALU(object):
 
         self.__cpu._core_regs["ip"] = num_op
 
-        src.LOGGER.log("  jmp: -> 0x%08X" % (num_op), "DEBUG")
+        backend.LOGGER.log("  jmp: -> 0x%08X" % (num_op), "DEBUG")
     
     def __OP_breq(self, flags, op1, op2):
         """0x60"""
-        src.LOGGER.log("instruction: breq","DEBUG")
+        backend.LOGGER.log("instruction: breq","DEBUG")
 
         condition = self.__cpu._sreg["z"]
         if condition:
@@ -419,14 +419,14 @@ class ALU(object):
                 num_op = self.__cpu._gp_regs["r" + str(op1)]
 
             self.__cpu._core_regs["ip"] = num_op
-            src.LOGGER.log("  breq: -> 0x%08X" % (num_op), "DEBUG")
+            backend.LOGGER.log("  breq: -> 0x%08X" % (num_op), "DEBUG")
         else:
             self.__increase_ip(1)
-            src.LOGGER.log("  breq: -> --------", "DEBUG")
+            backend.LOGGER.log("  breq: -> --------", "DEBUG")
 
     def __OP_brne(self, flags, op1, op2):
         """0x61"""
-        src.LOGGER.log("instruction: brne","DEBUG")
+        backend.LOGGER.log("instruction: brne","DEBUG")
 
         condition = not self.__cpu._sreg["z"]
         if condition:
@@ -437,14 +437,14 @@ class ALU(object):
                 num_op = self.__cpu._gp_regs["r" + str(op1)]
 
             self.__cpu._core_regs["ip"] = num_op
-            src.LOGGER.log("  brne: -> 0x%08X" % (num_op), "DEBUG")
+            backend.LOGGER.log("  brne: -> 0x%08X" % (num_op), "DEBUG")
         else:
             self.__increase_ip(1)
-            src.LOGGER.log("  brne: -> --------", "DEBUG")
+            backend.LOGGER.log("  brne: -> --------", "DEBUG")
 
     def __OP_brp(self, flags, op1, op2):
         """0x62"""
-        src.LOGGER.log("instruction: brp","DEBUG")
+        backend.LOGGER.log("instruction: brp","DEBUG")
 
         condition = not self.__cpu._sreg["n"]
         if condition:
@@ -455,14 +455,14 @@ class ALU(object):
                 num_op = self.__cpu._gp_regs["r" + str(op1)]
 
             self.__cpu._core_regs["ip"] = num_op
-            src.LOGGER.log("  brp: -> 0x%08X" % (num_op), "DEBUG")
+            backend.LOGGER.log("  brp: -> 0x%08X" % (num_op), "DEBUG")
         else:
             self.__increase_ip(1)
-            src.LOGGER.log("  brp: -> --------", "DEBUG")
+            backend.LOGGER.log("  brp: -> --------", "DEBUG")
 
     def __OP_brn(self, flags, op1, op2):
         """0x60"""
-        src.LOGGER.log("instruction: brn","DEBUG")
+        backend.LOGGER.log("instruction: brn","DEBUG")
 
         condition = self.__cpu._sreg["n"]
         if condition:
@@ -473,14 +473,14 @@ class ALU(object):
                 num_op = self.__cpu._gp_regs["r" + str(op1)]
 
             self.__cpu._core_regs["ip"] = num_op
-            src.LOGGER.log("  brn: -> 0x%08X" % (num_op), "DEBUG")
+            backend.LOGGER.log("  brn: -> 0x%08X" % (num_op), "DEBUG")
         else:
             self.__increase_ip(1)
-            src.LOGGER.log("  brn: -> --------", "DEBUG")
+            backend.LOGGER.log("  brn: -> --------", "DEBUG")
 
     def __OP_call(self, flags, op1, op2):
         """0x88"""
-        src.LOGGER.log("instruction: call","DEBUG")
+        backend.LOGGER.log("instruction: call","DEBUG")
 
         self.__cpu._mem.set_address(self.__cpu._core_regs["sp"], self.__cpu._core_regs["ip"] + 1)
         self.__cpu._core_regs["sp"] = self.__cpu._core_regs["sp"] - 1
@@ -493,11 +493,11 @@ class ALU(object):
 
         self.__cpu._core_regs["ip"] = num_op
 
-        src.LOGGER.log("  call: -> 0x%08X" % (num_op), "DEBUG")
+        backend.LOGGER.log("  call: -> 0x%08X" % (num_op), "DEBUG")
 
     def __OP_ret(self, flags, op1, op2):
         """0x89"""
-        src.LOGGER.log("instruction: ret","DEBUG")
+        backend.LOGGER.log("instruction: ret","DEBUG")
 
         self.__cpu._core_regs["sp"] = self.__cpu._core_regs["sp"] + 1
 
@@ -506,11 +506,11 @@ class ALU(object):
 
         self.__cpu._core_regs["ip"] = num
 
-        src.LOGGER.log("  ret: -> 0x%08X" % self.__cpu._core_regs["ip"], "DEBUG")
+        backend.LOGGER.log("  ret: -> 0x%08X" % self.__cpu._core_regs["ip"], "DEBUG")
 
     def __OP_cmp(self, flags, op1, op2):
         """0x8F"""
-        src.LOGGER.log("instruction: cmp","DEBUG")
+        backend.LOGGER.log("instruction: cmp","DEBUG")
 
         num_op1 = self.__cpu._gp_regs["r" + str(op1)]
         num_op2 = self.__cpu._gp_regs["r" + str(op2)]
@@ -518,13 +518,13 @@ class ALU(object):
         ret = num_op1 - num_op2
         self.__set_sreg_s_z(ret)
 
-        src.LOGGER.log("  cmp: 0x%08X - 0x%08X" % (num_op1, num_op2), "DEBUG")
+        backend.LOGGER.log("  cmp: 0x%08X - 0x%08X" % (num_op1, num_op2), "DEBUG")
         self.__increase_ip(1)
 
     ## Systemcalls ##
     def __OP_prt(self, flags, op1, op2):
         """0xA0"""
-        src.LOGGER.log("instruction: prt","DEBUG")
+        backend.LOGGER.log("instruction: prt","DEBUG")
 
         print("r%i: 0x%08X" % (op1, self.__cpu._gp_regs["r" + str(op1)]))
         self.__increase_ip(1)

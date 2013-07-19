@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import src
-from src import ram
+import backend
+from backend import ram
 
 
 
@@ -19,7 +19,7 @@ class MEM(object):
 
 
     def __init__(self):
-        src.LOGGER.log("init MEM completed","INFO")
+        backend.LOGGER.log("init MEM completed","INFO")
         # set up list of mem segments
         self.__mem_segments = [None] * 65536
 

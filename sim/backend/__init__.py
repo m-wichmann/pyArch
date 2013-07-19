@@ -9,7 +9,7 @@ def init_pyArch():
 
 
 def initLogger():
-    from src import logger
+    from backend import logger
     return logger.PyArchLogger()
 
 

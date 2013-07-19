@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import src
-from src import alu
+import backend
+from backend import alu
 
 
 
 class CPU(object):
     """Represents one CPU. This contains the alu and some registers."""
     def __init__(self, bus):
-        src.LOGGER.log("init CPU completed","INFO")
+        backend.LOGGER.log("init CPU completed","INFO")
 
         # create instance of submodule
         self.__alu = alu.ALU(self)

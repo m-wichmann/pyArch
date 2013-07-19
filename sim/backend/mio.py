@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import src
+import backend
 
 class MIO(object):
     """Memory Mapped IO. Contains a 'memory segment' that is used to access the 'periphals'.
@@ -9,7 +9,7 @@ class MIO(object):
     """
 
     def __init__(self):
-        src.LOGGER.log("init MIO completed","INFO")
+        backend.LOGGER.log("init MIO completed","INFO")
         self.data = [0] * 65536
 
     def get_byte(self, address):
