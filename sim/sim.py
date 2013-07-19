@@ -10,14 +10,17 @@
 # cmd line parsing
 import argparse
 
-import src
-import src.bus
-import src.sys
-import src.cpu
-import src.mem
-import src.ram
-import src.rom
-import src.mio
+#import src
+#import src.bus
+#import src.sys
+#import src.cpu
+#import src.mem
+#import src.ram
+#import src.rom
+#import src.mio
+
+from src import *
+
 
 def pyArch_main(romfile, stepcount):
     """Simulator main method. Runs the code in 'romfile' for 'stepcount' steps."""
@@ -29,32 +32,35 @@ def pyArch_main(romfile, stepcount):
 
 def __init(romfile):
     """Init this system. In future the system should be configured by the user."""
+
     # sys init
-#    sys = src.sys.SYS()
+    # TODO:
+    # implement sys, so it does anything
+    sys_ = sys.SYS()
 
     # bus init
-    bus = src.bus.BUS()
+    bus_ = bus.BUS()
 
     # cpu init
-    cpu = src.cpu.CPU(bus)
+    cpu_ = cpu.CPU(bus_)
 
     # mem init
-    ram = src.ram.RAM()
-    rom = src.rom.ROM(romfile)
-    mio = src.mio.MIO()
-    mem = src.mem.MEM()
-    mem.add_segment(rom)
-    mem.add_segment(ram)
-    mem.add_segment(mio)
+    ram_ = ram.RAM()
+    rom_ = rom.ROM(romfile)
+    mio_ = mio.MIO()
+    mem_ = mem.MEM()
+    mem_.add_segment(rom_)
+    mem_.add_segment(ram_)
+    mem_.add_segment(mio_)
 
     # populate bus
-    bus.register_mem(mem)
-    bus.register_cpu(cpu)
+    bus_.register_mem(mem_)
+    bus_.register_cpu(cpu_)
 
     # init mem specific parts in cpu
-    cpu.init_mem()
+    cpu_.init_mem()
 
-    return cpu
+    return cpu_
 
 
 if __name__ == '__main__':

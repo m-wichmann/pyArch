@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import src
+from src import ram
 
 
 
@@ -25,7 +26,7 @@ class MEM(object):
     def get_ram_base(self):
         """Get base address of ram"""
         for s in self.__mem_segments:
-            if isinstance(s, src.ram.RAM):
+            if isinstance(s, ram.RAM):
                 return (self.__mem_segments.index(s) * 65536)
         return None
 
@@ -33,7 +34,7 @@ class MEM(object):
         """Can be used as stack pointer"""
         last = None
         for s in self.__mem_segments:
-            if isinstance(s, src.ram.RAM):
+            if isinstance(s, ram.RAM):
                 last = s
 
         if last != None:

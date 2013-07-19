@@ -9,8 +9,12 @@ def init_pyArch():
 
 
 def initLogger():
-    import src.logger
-    return src.logger.PyArchLogger()
+    from src import logger
+    return logger.PyArchLogger()
 
 
 init_pyArch()
+
+# TODO:
+# add modules to this list if 'import * from backend' should import them!
+__all__ = ["alu", "bus", "cpu", "mem", "mio", "ram", "rom", "sys"]

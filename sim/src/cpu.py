@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import src
-import src.alu
+from src import alu
 
 
 
@@ -12,7 +12,7 @@ class CPU(object):
         src.LOGGER.log("init CPU completed","INFO")
 
         # create instance of submodule
-        self.__alu = src.alu.ALU(self)
+        self.__alu = alu.ALU(self)
         self.__bus = bus
         # create cpu register
         self.__create_cpu_regs()
