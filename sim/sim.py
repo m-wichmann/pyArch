@@ -10,14 +10,13 @@
 # cmd line parsing
 import argparse
 
+# Allow import of module in sibling dir
 if __name__ == "__main__" and __package__ is None:
     from sys import path
     from os.path import dirname as dir
 
     path.append(dir(path[0]))
     __package__ = "sim"
-
-
 
 from backend import *
 
