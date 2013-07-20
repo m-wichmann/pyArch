@@ -10,6 +10,15 @@
 # cmd line parsing
 import argparse
 
+if __name__ == "__main__" and __package__ is None:
+    from sys import path
+    from os.path import dirname as dir
+
+    path.append(dir(path[0]))
+    __package__ = "sim"
+
+
+
 from backend import *
 
 
@@ -23,11 +32,6 @@ def pyArch_main(romfile, stepcount):
 
 def __init(romfile):
     """Init this system. In future the system should be configured by the user."""
-
-    # sys init
-    # TODO:
-    # implement sys, so it does anything
-    sys_ = sys.SYS()
 
     # bus init
     bus_ = bus.BUS()

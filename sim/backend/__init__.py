@@ -17,4 +17,4 @@ init_pyArch()
 
 # TODO:
 # add modules to this list if 'import * from backend' should import them!
-__all__ = ["alu", "bus", "cpu", "mem", "mio", "ram", "rom", "sys"]
+__all__ = ["alu", "bus", "cpu", "mem", "mio", "ram", "rom"]
